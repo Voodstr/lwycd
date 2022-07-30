@@ -17,45 +17,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
-@Composable
-fun SimpleColumn(list: MutableList<String>) {
-    val rememberedList = remember { mutableStateOf(list) }
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = { list.add("0") }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.add)
-                )
-            }
-        }) {
-        LazyColumn {
-            items(rememberedList.value) {
-                Text(text = it)
-            }
-        }
-    }
-}
+
 
 @Composable
-fun TaskScreen(folderName: String, folderList: MutableList<YouCanDo>) {
-    val myTasks by remember { mutableStateOf(folderList) }
+fun TaskScreen(checklistViewModel: ChecklistViewModel) {
+    val tasksScreenState = checklistViewModel.checklistState.collectAsState()
     Scaffold(
         topBar = {
-            TaskScreenTopAppBar(folderName, onBackPressed = { backToFolders() })
+            TaskScreenTopAppBar("folderName", onBackPressed = { backToFolders() })
         },
         floatingActionButton = {
             AddFab(onFabAdd = {
-                myTasks.add(YouCanDo("new task",false))
+                checklistViewModel.addTask(ChecklistViewModel.Task("new task", false))
             })
         }
     ) {
-        TaskColumn(tasks = myTasks)
+        TaskColumn(tasks = tasksScreenState.value.value)
     }
 }
 
 @Composable
-fun TaskColumn(tasks: MutableList<YouCanDo>) {
+fun TaskColumn(tasks: List<ChecklistViewModel.Task>) {
     val list by remember {
         mutableStateOf(tasks)
     }
@@ -67,7 +49,7 @@ fun TaskColumn(tasks: MutableList<YouCanDo>) {
 }
 
 @Composable
-fun TaskRow(youCanDo: YouCanDo) {
+fun TaskRow(youCanDo: ChecklistViewModel.Task) {
     var viewedText by remember { mutableStateOf(youCanDo.text) }
     var viewedCheck by remember { mutableStateOf(youCanDo.completion) }
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -127,23 +109,19 @@ fun TaskScreenTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
         elevation = 0.dp
     )
 }
-
+/*
 @Composable
 @Preview
 fun TaskScreenPreview() {
     val tasksFromFolder = arrayListOf(
-        YouCanDo("get up", false),
-        YouCanDo("brush teeth", false),
-        YouCanDo("boil eggs", false),
-        YouCanDo("make coffee", false),
-        YouCanDo("eat breakfast", false),
-        YouCanDo("dress up", false),
-        YouCanDo("go to work", false),
+        Task("get up", false),
+        Task("brush teeth", false),
+        Task("boil eggs", false),
+        Task("make coffee", false),
+        Task("eat breakfast", false),
+        Task("dress up", false),
+        Task("go to work", false),
     )
-    TaskScreen("Work", tasksFromFolder)
+    TaskScreen()
 }
-
-data class YouCanDo(
-    var text: String,
-    var completion: Boolean
-)
+ */
