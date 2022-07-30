@@ -1,6 +1,5 @@
 package ru.voodster.lwycd
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +12,7 @@ class ChecklistViewModel:ViewModel() {
         var completion: Boolean
     )
 
-    private val tasksFromFolder = arrayListOf(
+    private val cachedList = mutableListOf(
         Task("get up", false),
         Task("brush teeth", false),
         Task("boil eggs", false),
@@ -22,34 +21,24 @@ class ChecklistViewModel:ViewModel() {
         Task("dress up", false),
         Task("go to work", false),
     )
+    private val currentList : List<Task>
+        get() = cachedList.toList()
 
 
-    sealed class ChecklistState(open val value: List<Task>) {
-        data class Ready(
-            override var value: List<Task>
-        ) : ChecklistState(value)
+    private val _checklist = MutableStateFlow(currentList)
+    val checklist = _checklist.asStateFlow()
 
-        data class Error(
-            override val value: List<Task>,
-            val exception: Exception
-        ) : ChecklistState(value)
-    }
-
-    private val _checklistState = MutableStateFlow(ChecklistState.Ready(tasksFromFolder))
-    val checklistState = _checklistState.asStateFlow()
-
-    private fun update() {
-        _checklistState.update { ChecklistState.Ready(tasksFromFolder) }
-    }
-
-
-    fun getData():ChecklistState{
-        return ChecklistState.Ready(tasksFromFolder)
+    private fun writeChangesToList() {
+        _checklist.update { currentList }
     }
 
     fun addTask(task: Task) {
-        tasksFromFolder.add(task)
-        _checklistState.update { ChecklistState.Ready(tasksFromFolder) }
+        cachedList.add(task)
+        writeChangesToList()
+    }
+
+    companion object {
+        const val TAG = "ChecklistViewModel"
     }
 
 }

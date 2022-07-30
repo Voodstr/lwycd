@@ -13,43 +13,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-
+import ru.voodster.lwycd.ChecklistViewModel.Task
 
 
 @Composable
 fun TaskScreen(checklistViewModel: ChecklistViewModel) {
-    val tasksScreenState = checklistViewModel.checklistState.collectAsState()
+    val tasks = checklistViewModel.checklist.collectAsState()
     Scaffold(
         topBar = {
             TaskScreenTopAppBar("folderName", onBackPressed = { backToFolders() })
         },
         floatingActionButton = {
             AddFab(onFabAdd = {
-                checklistViewModel.addTask(ChecklistViewModel.Task("new task", false))
+                checklistViewModel.addTask(Task("new task", false))
             })
         }
     ) {
-        TaskColumn(tasks = tasksScreenState.value.value)
+        TaskColumn(tasks = tasks.value)
     }
 }
 
 @Composable
-fun TaskColumn(tasks: List<ChecklistViewModel.Task>) {
-    val list by remember {
-        mutableStateOf(tasks)
-    }
+fun TaskColumn(tasks: List<Task>) {
     LazyColumn(content = {
-        items(list) { task ->
+        items(tasks) { task ->
             TaskRow(task)
         }
     })
 }
 
 @Composable
-fun TaskRow(youCanDo: ChecklistViewModel.Task) {
+fun TaskRow(youCanDo: Task) {
     var viewedText by remember { mutableStateOf(youCanDo.text) }
     var viewedCheck by remember { mutableStateOf(youCanDo.completion) }
     Row(verticalAlignment = Alignment.CenterVertically) {
