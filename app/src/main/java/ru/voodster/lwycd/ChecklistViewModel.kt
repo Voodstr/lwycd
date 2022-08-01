@@ -7,21 +7,18 @@ import kotlinx.coroutines.flow.update
 
 class ChecklistViewModel:ViewModel() {
 
-    data class Task(
-        var text: String,
-        var completion: Boolean
-    )
+
 
     private val cachedList = mutableListOf(
-        Task("get up", false),
-        Task("brush teeth", false),
-        Task("boil eggs", false),
-        Task("make coffee", false),
-        Task("eat breakfast", false),
-        Task("dress up", false),
-        Task("go to work", false),
+        CheckableTask("get up", false),
+        CheckableTask("brush teeth", false),
+        CheckableTask("boil eggs", false),
+        CheckableTask("make coffee", false),
+        CheckableTask("eat breakfast", false),
+        CheckableTask("dress up", false),
+        CheckableTask("go to work", false),
     )
-    private val currentList : List<Task>
+    private val currentList : List<CheckableTask>
         get() = cachedList.toList()
 
 
@@ -32,7 +29,7 @@ class ChecklistViewModel:ViewModel() {
         _checklist.update { currentList }
     }
 
-    fun addTask(task: Task) {
+    fun addTask(task: CheckableTask) {
         cachedList.add(task)
         writeChangesToList()
     }

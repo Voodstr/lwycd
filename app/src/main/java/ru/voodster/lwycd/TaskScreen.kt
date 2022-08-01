@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ru.voodster.lwycd.ChecklistViewModel.Task
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TaskScreen(checklistViewModel: ChecklistViewModel) {
     val tasks = checklistViewModel.checklist.collectAsState()
@@ -26,17 +26,19 @@ fun TaskScreen(checklistViewModel: ChecklistViewModel) {
         },
         floatingActionButton = {
             AddFab(onFabAdd = {
-                checklistViewModel.addTask(Task("new task", false))
+                checklistViewModel.addTask(CheckableTask("new task", false))
             })
         }
     ) {
-        TaskColumn(tasks = tasks.value)
+        TaskColumn(tasks = tasks.value,
+            Modifier
+                .padding(it))
     }
 }
 
 @Composable
-fun TaskColumn(tasks: List<Task>) {
-    LazyColumn(content = {
+fun TaskColumn(tasks: List<CheckableTask>, modifier: Modifier) {
+    LazyColumn(modifier = modifier.imePadding(), content = {
         items(tasks) { task ->
             TaskRow(task)
         }
@@ -44,7 +46,7 @@ fun TaskColumn(tasks: List<Task>) {
 }
 
 @Composable
-fun TaskRow(youCanDo: Task) {
+fun TaskRow(youCanDo: CheckableTask) {
     var viewedText by remember { mutableStateOf(youCanDo.text) }
     var viewedCheck by remember { mutableStateOf(youCanDo.completion) }
     Row(verticalAlignment = Alignment.CenterVertically) {
