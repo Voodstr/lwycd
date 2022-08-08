@@ -2,4 +2,5 @@
     <string name="app_name">lwycd</string>
     <string name="back">back</string>
     <string name="add">add</string>
+    <string name="tasktextfield_hint">Task</string>
 </resources>
