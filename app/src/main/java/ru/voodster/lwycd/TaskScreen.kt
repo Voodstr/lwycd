@@ -12,7 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -22,7 +27,9 @@ fun TaskScreen(checklistViewModel: ChecklistViewModel) {
     val tasks = checklistViewModel.checklist.collectAsState()
     Scaffold(
         topBar = {
-            TaskScreenTopAppBar("folderName", onBackPressed = { backToFolders() })
+            TaskScreenTopAppBar(
+                "folderName",
+                onBackPressed = { checklistViewModel.onBackToFolders() })
         },
         floatingActionButton = {
             AddFab(onFabAdd = {
@@ -30,11 +37,54 @@ fun TaskScreen(checklistViewModel: ChecklistViewModel) {
             })
         }
     ) {
-        TaskColumn(tasks = tasks.value,
+        TaskColumn(
+            tasks = tasks.value,
             Modifier
-                .padding(it))
+                .padding(it)
+        )
     }
 }
+
+
+@Composable
+fun UserInput(
+    onTaskEdited: () -> Unit,
+    resetScroll: () -> Unit,
+    modifier: Modifier
+) {
+    var textState by remember { mutableStateOf(TextFieldValue()) }
+    // Used to decide if the keyboard should be shown
+    var textFieldFocusState by remember { mutableStateOf(false) }
+
+
+}
+
+
+@Preview
+@Composable
+fun InputFieldPreview() {
+    UserInputField()
+}
+
+@Composable
+fun UserInputField(textFieldValue: TextFieldValue, keyboardType: KeyboardType = KeyboardType.Text,
+                   onTextChanged: (TextFieldValue) -> Unit,
+                   keyboardShown: Boolean,
+                   onTextFieldFocused: (Boolean) -> Unit,
+) {
+    Row  (      modifier = Modifier
+            .fillMaxWidth()
+        .height(64.dp)
+        .semantics {
+            contentDescription = "UserInputField"
+            keyboardShownProperty = keyboardShown
+        },
+    horizontalArrangement = Arrangement.End
+    ) {
+        TextField(value = textFieldValue, onValueChange = {onTextChanged(it)})
+    }
+}
+
 
 @Composable
 fun TaskColumn(tasks: List<CheckableTask>, modifier: Modifier) {
@@ -72,10 +122,6 @@ fun AddFab(onFabAdd: () -> Unit) {
     ) {
         Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(id = R.string.add))
     }
-}
-
-fun backToFolders() {
-
 }
 
 @Composable

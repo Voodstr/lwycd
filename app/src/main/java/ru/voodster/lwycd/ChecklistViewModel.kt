@@ -34,6 +34,10 @@ class ChecklistViewModel:ViewModel() {
         writeChangesToList()
     }
 
+    fun onBackToFolders() {
+        TODO("Not yet implemented")
+    }
+
     companion object {
         const val TAG = "ChecklistViewModel"
     }
