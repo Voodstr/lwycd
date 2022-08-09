@@ -10,13 +10,13 @@ class ChecklistViewModel:ViewModel() {
 
 
     private val cachedList = mutableListOf(
-        CheckableTasks("get up", false),
-        CheckableTasks("brush teeth", false),
-        CheckableTasks("boil eggs", false),
-        CheckableTasks("make coffee", false),
-        CheckableTasks("eat breakfast", false),
-        CheckableTasks("dress up", false),
-        CheckableTasks("go to work", false),
+        CheckableTasks("get up", false,1),
+        CheckableTasks("brush teeth", false,1),
+        CheckableTasks("boil eggs", false,1),
+        CheckableTasks("make coffee", false,1),
+        CheckableTasks("eat breakfast", false,1),
+        CheckableTasks("dress up", false,1),
+        CheckableTasks("go to work", false,1),
     )
     private val currentList : List<CheckableTasks>
         get() = cachedList.toList()
@@ -29,13 +29,13 @@ class ChecklistViewModel:ViewModel() {
         _checklist.update { currentList }
     }
 
-    fun addTask(task: CheckableTasks) {
-        cachedList.add(task)
+    fun addTask(text:String,folder: Int) {
+        cachedList.add(CheckableTasks(text,false,folder))
         writeChangesToList()
     }
 
+    //TODO not implemented yet
     fun onBackToFolders() {
-        TODO("Not yet implemented")
     }
 
     companion object {

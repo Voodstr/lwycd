@@ -17,7 +17,6 @@ import ru.voodster.lwycd.ui.theme.LwycdTheme
 
 class MainActivity : ComponentActivity() {
     private val taskViewModel by viewModels<ChecklistViewModel>()
-    @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -25,26 +24,13 @@ class MainActivity : ComponentActivity() {
                 LwycdTheme {
                     // A surface container using the 'background' color from the theme
                     Surface(
-                        modifier = Modifier.fillMaxSize().navigationBarsPadding().imePadding(),
+                        modifier = Modifier.fillMaxSize().systemBarsPadding(),
                         color = MaterialTheme.colors.background
                     ) {
-                        TaskScreen(taskViewModel)
+                        TaskScreen(taskViewModel,Modifier.navigationBarsPadding().fillMaxSize())
                     }
                 }
 
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LwycdTheme {
-        Greeting("Android")
     }
 }

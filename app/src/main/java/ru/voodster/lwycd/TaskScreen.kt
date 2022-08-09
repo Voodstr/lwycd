@@ -1,9 +1,12 @@
+@file:Suppress("OPT_IN_USAGE_FUTURE_ERROR")
+
 package ru.voodster.lwycd
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,12 +14,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -28,72 +35,100 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskScreen(checklistViewModel: ChecklistViewModel) {
+fun TaskScreen(checklistViewModel: ChecklistViewModel,modifier: Modifier) {
     val tasks = checklistViewModel.checklist.collectAsState()
+    val currentFolderID = 1
+
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+
+
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TaskScreenTopAppBar(
                 "folderName",
                 onBackPressed = { checklistViewModel.onBackToFolders() })
-        },
-        floatingActionButton = {
-            AddFab(onFabAdd = {
-                checklistViewModel.addTask(CheckableTasks())
-            })
         }
     ) {
-        TaskColumn(
-            tasks = tasks.value,
-            Modifier
-                .padding(it)
-        )
+        Surface(modifier = modifier) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                ) {
+                    TaskColumn(
+                        tasks = tasks.value,
+                        Modifier
+                            .padding(it)
+                            .weight(1f)
+                            .fillMaxSize()
+                    )
+                    TaskEdit(
+                        onTaskAdd = {checklistViewModel.addTask("New Task",currentFolderID)},
+                        onTaskDelete = {},
+                        onTaskSave = {},
+                        resetScroll = {
+                            scope.launch {
+                            scrollState.scrollToItem(0)
+                        } },
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .imePadding()
+                            .weight(0.1f))
+                }
+            }
+        }
     }
 }
 
-
 @Composable
 fun TaskEdit(
-    onTaskEdited: () -> Unit,
-    resetScroll: () -> Unit,
-    modifier: Modifier
+    onTaskSave: (String) -> Unit,
+    onTaskAdd: () -> Unit,
+    onTaskDelete: () -> Unit,
+    resetScroll: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     var textState by remember { mutableStateOf(TextFieldValue()) }
-    // Used to decide if the keyboard should be shown
+    // Used to decide if the keyboard should be shown+
     var textFieldFocusState by remember { mutableStateOf(false) }
-    Column() {
-        TaskInputField(
-            textFieldValue = textState,
-            onTextChanged = {textState = it},
-            keyboardShown = textFieldFocusState,
-            onTextFieldFocused = { focused ->
-                if (focused) {
-                    resetScroll()
-                }
-                textFieldFocusState = focused
-            },
-            focusState = textFieldFocusState
-        )
-
-        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(onClick = { /*TODO*/ }) {
+    Surface(elevation = 2.dp) {
+        Column(modifier = modifier) {
+            TaskInputField(
+                textFieldValue = textState,
+                onTextChanged = { textState = it },
+                keyboardShown = textFieldFocusState,
+                onTextFieldFocused = { focused ->
+                    if (focused) {
+                        resetScroll()
+                    }
+                    textFieldFocusState = focused
+                },
+                focusState = textFieldFocusState
+            )
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = { onTaskSave(textState.text) }) {
                     Text(text = "Save")
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { onTaskAdd() }) {
                     Text(text = "Add")
+                    resetScroll()
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { onTaskDelete() }) {
                     Text(text = "Delete")
                 }
             }
         }
     }
+
 }
 
 
@@ -101,13 +136,15 @@ fun TaskEdit(
 @Composable
 fun InputFieldPreview() {
     Scaffold(Modifier.fillMaxSize()) {
-            TaskEdit(
-                onTaskEdited = { /*TODO*/ },
-                resetScroll = { /*TODO*/ },
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            )
+        TaskEdit(
+            onTaskSave = {},
+            onTaskDelete = {},
+            onTaskAdd = {},
+            resetScroll = { /*TODO*/ },
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        )
     }
 }
 
@@ -116,10 +153,12 @@ var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 
 @Composable
 fun TaskInputField(
-    textFieldValue: TextFieldValue, keyboardType: KeyboardType = KeyboardType.Text,
+    textFieldValue: TextFieldValue,
+    keyboardType: KeyboardType = KeyboardType.Text,
     onTextChanged: (TextFieldValue) -> Unit,
     keyboardShown: Boolean,
-    onTextFieldFocused: (Boolean) -> Unit, focusState: Boolean
+    onTextFieldFocused: (Boolean) -> Unit,
+    focusState: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -137,7 +176,7 @@ fun TaskInputField(
                     .height(64.dp)
                     .weight(1f)
                     .align(Alignment.Bottom)
-                    .background(Color.DarkGray, shape = RoundedCornerShape(10.dp))
+                    .background(Color.LightGray, shape = RoundedCornerShape(10.dp))
             ) {
                 var lastFocusState by remember { mutableStateOf(false) }
                 BasicTextField(
@@ -178,7 +217,7 @@ fun TaskInputField(
 
 @Composable
 fun TaskColumn(tasks: List<CheckableTasks>, modifier: Modifier) {
-    LazyColumn(modifier = modifier.imePadding(), content = {
+    LazyColumn(modifier = modifier.fillMaxSize(), content = {
         items(tasks) { task ->
             TaskRow(task)
         }
