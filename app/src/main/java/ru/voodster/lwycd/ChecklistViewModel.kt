@@ -10,15 +10,15 @@ class ChecklistViewModel:ViewModel() {
 
 
     private val cachedList = mutableListOf(
-        CheckableTask("get up", false),
-        CheckableTask("brush teeth", false),
-        CheckableTask("boil eggs", false),
-        CheckableTask("make coffee", false),
-        CheckableTask("eat breakfast", false),
-        CheckableTask("dress up", false),
-        CheckableTask("go to work", false),
+        CheckableTasks("get up", false),
+        CheckableTasks("brush teeth", false),
+        CheckableTasks("boil eggs", false),
+        CheckableTasks("make coffee", false),
+        CheckableTasks("eat breakfast", false),
+        CheckableTasks("dress up", false),
+        CheckableTasks("go to work", false),
     )
-    private val currentList : List<CheckableTask>
+    private val currentList : List<CheckableTasks>
         get() = cachedList.toList()
 
 
@@ -29,7 +29,7 @@ class ChecklistViewModel:ViewModel() {
         _checklist.update { currentList }
     }
 
-    fun addTask(task: CheckableTask) {
+    fun addTask(task: CheckableTasks) {
         cachedList.add(task)
         writeChangesToList()
     }

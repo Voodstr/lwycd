@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,9 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -31,6 +28,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -45,7 +44,7 @@ fun TaskScreen(checklistViewModel: ChecklistViewModel) {
         },
         floatingActionButton = {
             AddFab(onFabAdd = {
-                checklistViewModel.addTask(CheckableTask("new task", false))
+                checklistViewModel.addTask(CheckableTasks())
             })
         }
     ) {
@@ -178,7 +177,7 @@ fun TaskInputField(
 
 
 @Composable
-fun TaskColumn(tasks: List<CheckableTask>, modifier: Modifier) {
+fun TaskColumn(tasks: List<CheckableTasks>, modifier: Modifier) {
     LazyColumn(modifier = modifier.imePadding(), content = {
         items(tasks) { task ->
             TaskRow(task)
@@ -187,7 +186,7 @@ fun TaskColumn(tasks: List<CheckableTask>, modifier: Modifier) {
 }
 
 @Composable
-fun TaskRow(youCanDo: CheckableTask) {
+fun TaskRow(youCanDo: CheckableTasks) {
     var viewedText by remember { mutableStateOf(youCanDo.text) }
     var viewedCheck by remember { mutableStateOf(youCanDo.completion) }
     Row(verticalAlignment = Alignment.CenterVertically) {

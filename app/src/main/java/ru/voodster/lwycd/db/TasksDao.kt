@@ -2,14 +2,15 @@ package ru.voodster.lwycd.db
 
 import androidx.room.*
 import io.reactivex.rxjava3.core.Single
-import ru.voodster.lwycd.CheckableTask
+import ru.voodster.lwycd.CheckableTasks
 
 @Dao
 interface TasksDao {
-    @Query("select checkableTasks from Checklist")
-    fun getTasks(): Single<List<CheckableTask>>
+    @Query("select checkableTaskIDs from Checklist")
+    fun getTasks(): Single<List<Int>>
     //@Query("insert into Checklist ")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun add(vararg tasks: CheckableTask)
+    fun addTask(vararg tasks: CheckableTasks)
+
 
 }
