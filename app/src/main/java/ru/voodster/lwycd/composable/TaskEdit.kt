@@ -33,7 +33,7 @@ fun TaskEdit(
     modifier: Modifier = Modifier
 ) {
     var textState by remember { mutableStateOf(TextFieldValue()) }
-    // Used to decide if the keyboard should be shown+
+    // Used to decide if the keyboard should be shown
     var textFieldFocusState by remember { mutableStateOf(false) }
     Surface(elevation = 2.dp) {
         Column(modifier = modifier) {
