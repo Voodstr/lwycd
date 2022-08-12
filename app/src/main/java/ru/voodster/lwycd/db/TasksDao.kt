@@ -2,7 +2,7 @@ package ru.voodster.lwycd.db
 
 import androidx.room.*
 import io.reactivex.rxjava3.core.Single
-import ru.voodster.lwycd.CheckableTasks
+import ru.voodster.lwycd.CheckableTask
 
 @Dao
 interface TasksDao {
@@ -10,7 +10,7 @@ interface TasksDao {
     fun getTasks(): Single<List<Int>>
     //@Query("insert into Checklist ")
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addTask(vararg tasks: CheckableTasks)
+    fun addTask(vararg tasks: CheckableTask)
 
 
 }

@@ -7,11 +7,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import ru.voodster.lwycd.composable.CheckListContent
+import ru.voodster.lwycd.entities.initialChecklistFolderState
 import ru.voodster.lwycd.ui.theme.LwycdTheme
 
 
@@ -27,7 +26,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize().systemBarsPadding(),
                         color = MaterialTheme.colors.background
                     ) {
-                        TaskScreen(taskViewModel,Modifier.navigationBarsPadding().fillMaxSize())
+                        CheckListContent(
+                            Modifier.navigationBarsPadding().fillMaxSize(),
+                            initialChecklistFolderState
+                        )
                     }
                 }
 

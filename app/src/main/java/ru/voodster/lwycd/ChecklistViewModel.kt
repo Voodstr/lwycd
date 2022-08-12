@@ -4,23 +4,25 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import ru.voodster.lwycd.entities.initialChecklistFolderState
 
 class ChecklistViewModel:ViewModel() {
 
 
 
     private val cachedList = mutableListOf(
-        CheckableTasks("get up", false,1),
-        CheckableTasks("brush teeth", false,1),
-        CheckableTasks("boil eggs", false,1),
-        CheckableTasks("make coffee", false,1),
-        CheckableTasks("eat breakfast", false,1),
-        CheckableTasks("dress up", false,1),
-        CheckableTasks("go to work", false,1),
+        CheckableTask("get up", false,1),
+        CheckableTask("brush teeth", false,1),
+        CheckableTask("boil eggs", false,1),
+        CheckableTask("make coffee", false,1),
+        CheckableTask("eat breakfast", false,1),
+        CheckableTask("dress up", false,1),
+        CheckableTask("go to work", false,1),
     )
-    private val currentList : List<CheckableTasks>
+    private val currentList : List<CheckableTask>
         get() = cachedList.toList()
 
+    private val exampleTaskState = initialChecklistFolderState
 
     private val _checklist = MutableStateFlow(currentList)
     val checklist = _checklist.asStateFlow()
@@ -30,7 +32,7 @@ class ChecklistViewModel:ViewModel() {
     }
 
     fun addTask(text:String,folder: Int) {
-        cachedList.add(CheckableTasks(text,false,folder))
+        cachedList.add(0,CheckableTask(text,false,folder))
         writeChangesToList()
     }
 

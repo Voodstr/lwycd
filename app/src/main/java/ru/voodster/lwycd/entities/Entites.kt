@@ -10,7 +10,7 @@ import java.sql.Date
 
 @Entity(tableName = "Tasks")
 @Parcelize
-data class CheckableTasks(
+data class CheckableTask(
     @ColumnInfo var text: String,
     @ColumnInfo var completion: Boolean,
     @ColumnInfo val folderID: Int,
