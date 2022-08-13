@@ -8,6 +8,6 @@ class CheckListFolderState(val folder: TaskFolder, initialTasks: List<CheckableT
     val tasks: List<CheckableTask> = _tasks
 
     fun addTask(msg: CheckableTask) {
-        _tasks.add(0, msg) // Add to the beginning of the list
+        _tasks.add( msg) // Add to the beginning of the list
     }
 }

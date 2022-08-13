@@ -16,9 +16,7 @@ data class CheckableTask(
     @ColumnInfo val folderID: Int,
     @PrimaryKey(autoGenerate = true)
     private val id: Int = 0
-):Parcelable{
-
-}
+) : Parcelable
 
 
 @Entity(tableName = "ChecklistFolders")
@@ -27,5 +25,5 @@ data class TaskFolder(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo var name: String,
     @ColumnInfo var completion: Boolean,
-    @ColumnInfo val dateOfCompletion:Date
-):Parcelable
+    @ColumnInfo val dateOfCompletion: Date
+) : Parcelable

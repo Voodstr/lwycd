@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
@@ -20,18 +22,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-                LwycdTheme {
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize().systemBarsPadding(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        CheckListContent(
-                            Modifier.navigationBarsPadding().fillMaxSize(),
-                            initialChecklistFolderState
-                        )
-                    }
+            LwycdTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .systemBarsPadding(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    CheckListContent(
+                        Modifier
+                            .navigationBarsPadding()
+                            .fillMaxSize(),
+                        initialChecklistFolderState
+                    )
                 }
+            }
 
         }
     }

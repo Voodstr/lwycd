@@ -35,7 +35,7 @@ fun CheckListContent(
     modifier: Modifier,
     checkListState: CheckListFolderState
 ) {
-    var taskNumber = 1;
+    var taskNumber = 1
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
@@ -58,14 +58,15 @@ fun CheckListContent(
                             CheckableTask(
                                 text = "New task ${taskNumber++}",
                                 completion = false,
-                                folderID = checkListState.folder.id)
+                                folderID = checkListState.folder.id
+                            )
                         )
                     },
                     onTaskDelete = {},
                     onTaskSave = {},
                     resetScroll = {
                         scope.launch {
-                            scrollState.scrollToItem(0)
+                            scrollState.scrollToItem(checkListState.tasks.size)
                         }
                     },
                     modifier = Modifier
@@ -77,7 +78,7 @@ fun CheckListContent(
                 taskFolderName = "FolderName",
                 onBackPressed = {},
                 scrollBehavior = scrollBehavior,
-                modifier        = Modifier.statusBarsPadding()
+                modifier = Modifier.statusBarsPadding()
             )
         }
     }
@@ -93,16 +94,13 @@ fun Checklist(
 ) {
     Box(modifier = modifier) {
         LazyColumn(
-            reverseLayout = true,
             state = scrollState,
-            contentPadding = WindowInsets.statusBars.add(WindowInsets(top = 56.dp)).asPaddingValues(),
+            contentPadding = WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+                .asPaddingValues(),
             modifier = modifier.fillMaxSize()
         ) {
-            for (index in checklist.indices) {
-                val content = checklist[index]
-                item {
-                    TaskRow(checkableTask = content)
-                }
+            checklist.forEach {
+                item { TaskRow(checkableTask = it) }
             }
         }
     }

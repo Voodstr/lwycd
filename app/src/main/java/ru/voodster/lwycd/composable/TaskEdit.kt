@@ -49,13 +49,13 @@ fun TaskEdit(
                 },
                 focusState = textFieldFocusState
             )
-            taskEditButtons(
+            TaskEditButtons(
                 onTaskAdd = {
                     onTaskAdd()
                     resetScroll()
                 },
-                onTaskSave = {onTaskSave()},
-                onTaskDelete = {onTaskDelete()},
+                onTaskSave = { onTaskSave(textState.text) },
+                onTaskDelete = { onTaskDelete() },
             )
         }
     }
@@ -64,7 +64,7 @@ fun TaskEdit(
 
 
 @Composable
-fun taskEditButtons(
+fun TaskEditButtons(
     onTaskAdd: () -> Unit,
     onTaskDelete: () -> Unit,
     onTaskSave: () -> Unit
@@ -73,7 +73,9 @@ fun taskEditButtons(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Button(onClick = { onTaskSave() }) {
+        Button(onClick = {
+            onTaskSave()
+        }) {
             Text(text = "Save")
         }
         Button(onClick = {
