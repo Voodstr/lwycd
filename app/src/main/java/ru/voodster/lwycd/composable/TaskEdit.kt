@@ -26,11 +26,11 @@ import ru.voodster.lwycd.R
 
 @Composable
 fun TaskEdit(
+    modifier: Modifier = Modifier,
     onTaskSave: (String) -> Unit,
     onTaskAdd: () -> Unit,
     onTaskDelete: () -> Unit,
-    resetScroll: () -> Unit = {},
-    modifier: Modifier = Modifier
+    resetScroll: () -> Unit = {}
 ) {
     var textState by remember { mutableStateOf(TextFieldValue()) }
     // Used to decide if the keyboard should be shown
@@ -94,14 +94,13 @@ fun TaskEditButtons(
 fun InputFieldPreview() {
     Scaffold(Modifier.fillMaxSize()) {
         TaskEdit(
-            onTaskSave = {},
-            onTaskDelete = {},
-            onTaskAdd = {},
-            resetScroll = { /*TODO*/ },
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
-        )
+                .fillMaxSize(),
+            onTaskSave = {},
+            onTaskAdd = {},
+            onTaskDelete = {}
+        ) { /*TODO*/ }
     }
 }
 

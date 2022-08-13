@@ -53,6 +53,10 @@ fun CheckListContent(
                     modifier = Modifier.weight(1f)
                 )
                 TaskEdit(
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .imePadding(),
+                    onTaskSave = {},
                     onTaskAdd = {
                         checkListState.addTask(
                             CheckableTask(
@@ -62,17 +66,12 @@ fun CheckListContent(
                             )
                         )
                     },
-                    onTaskDelete = {},
-                    onTaskSave = {},
-                    resetScroll = {
-                        scope.launch {
-                            scrollState.scrollToItem(checkListState.tasks.size)
-                        }
-                    },
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .imePadding()
-                )
+                    onTaskDelete = {}
+                ) {
+                    scope.launch {
+                        scrollState.scrollToItem(checkListState.tasks.size)
+                    }
+                }
             }
             TaskFolderNameBar(
                 taskFolderName = "FolderName",
