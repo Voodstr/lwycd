@@ -28,7 +28,7 @@ import ru.voodster.lwycd.R
 fun TaskEdit(
     modifier: Modifier = Modifier,
     onTaskSave: (String) -> Unit,
-    onTaskAdd: () -> Unit,
+    onTaskAdd: (String) -> Unit,
     onTaskDelete: () -> Unit,
     resetScroll: () -> Unit = {}
 ) {
@@ -51,7 +51,7 @@ fun TaskEdit(
             )
             TaskEditButtons(
                 onTaskAdd = {
-                    onTaskAdd()
+                    onTaskAdd(textState.text)
                     resetScroll()
                 },
                 onTaskSave = { onTaskSave(textState.text) },

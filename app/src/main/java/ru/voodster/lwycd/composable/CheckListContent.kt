@@ -35,8 +35,8 @@ fun CheckListContent(
     modifier: Modifier,
     checkListState: CheckListFolderState
 ) {
-    var taskNumber = 1
     val scrollState = rememberLazyListState()
+
     val scope = rememberCoroutineScope()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
 
@@ -57,10 +57,10 @@ fun CheckListContent(
                         .navigationBarsPadding()
                         .imePadding(),
                     onTaskSave = {},
-                    onTaskAdd = {
+                    onTaskAdd = {text ->
                         checkListState.addTask(
                             CheckableTask(
-                                text = "New task ${taskNumber++}",
+                                text = text,
                                 completion = false,
                                 folderID = checkListState.folder.id
                             )
